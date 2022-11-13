@@ -28,6 +28,8 @@ class EditorJS extends Component
     public $uploadDisk;
 
     public $downloadDisk;
+    
+    public $uploadPath;
 
     public $imagesPath;
 
@@ -41,7 +43,8 @@ class EditorJS extends Component
         $readOnly = false,
         $placeholder = null,
         $uploadDisk = null,
-        $downloadDisk = null
+        $downloadDisk = null,
+        $uploadPath = '/'
     ) {
         if (is_null($uploadDisk)) {
             $uploadDisk = config('livewire-editorjs.default_img_upload_disk');
@@ -80,16 +83,16 @@ class EditorJS extends Component
             })
             ->first();
 
-            // When no file name is passed, we use the hashName of the tmp file
-            $storedFileName = $tmpFile->storePubliclyAs(
-                '/'.$this->imagesPath,
-                $fileName ?? $tmpFile->hashName(),
-                $this->uploadDisk
-            );
-    
-            $this->dispatchBrowserEvent($eventName, [
-                'url' => Storage::disk($this->uploadDisk)->url($storedFileName),
-            ]);
+        // When no file name is passed, we use the hashName of the tmp file
+        $storedFileName = $tmpFile->storeAs(
+            $this->uploadPath.$this->imagesPath,
+            $fileName ?? $tmpFile->hashName(),
+            $this->uploadDisk
+        );
+
+        $this->dispatchBrowserEvent($eventName, [
+            'url' => Storage::disk($this->uploadDisk)->url($storedFileName),
+        ]);
     }
 
     public function loadImageFromUrl(string $url)
