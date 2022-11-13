@@ -84,7 +84,7 @@ class EditorJS extends Component
             ->first();
 
         // When no file name is passed, we use the hashName of the tmp file
-        $storedFileName = $tmpFile->storeAs(
+        $storedFileName = $tmpFile->storePubliclyAs(
             $this->uploadPath.$this->imagesPath,
             $fileName ?? $tmpFile->hashName(),
             $this->uploadDisk
